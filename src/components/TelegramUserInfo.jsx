@@ -1,14 +1,18 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const TelegramUserInfo = () => {
   const [user, setUser] = useState(null);
+  const [initData, setInitData] = useState(null);
 
   useEffect(() => {
     const tg = window.Telegram.WebApp;
     tg.ready();
 
+    const initDataRaw = tg.initData;
     const user = tg.initDataUnsafe?.user;
+
+    setInitData(parseInitData(initDataRaw));
+
     if (user) {
       setUser(user);
     } else {
@@ -16,17 +20,34 @@ const TelegramUserInfo = () => {
     }
   }, []);
 
+  const parseInitData = (data) => {
+    const params = new URLSearchParams(data);
+    const initDataObj = {};
+    for (const [key, value] of params.entries()) {
+      initDataObj[key] = value;
+    }
+    return initDataObj;
+  };
+
   return (
     <div>
       {user ? (
-        <p>
-          Hello, {user.first_name} {user.last_name} (@{user.username})
+        <div>
+          <h2>User Information</h2>
           <pre>
             <code>{JSON.stringify(user, null, 2)}</code>
           </pre>
-        </p>
+        </div>
       ) : (
         <p>Loading user info...</p>
+      )}
+      {initData && (
+        <div>
+          <h2>Init Data</h2>
+          <pre>
+            <code>{JSON.stringify(initData, null, 2)}</code>
+          </pre>
+        </div>
       )}
     </div>
   );
