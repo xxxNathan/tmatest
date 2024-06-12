@@ -9,7 +9,6 @@ function App() {
 
   return (
     <>
-      <h1>xxxNathan_tma_bot</h1>
       <TelegramUserInfo />
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
