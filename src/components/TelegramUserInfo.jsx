@@ -10,6 +10,16 @@ const TelegramUserInfo = () => {
     const initDataRaw = tg.initData;
     const parsedInitData = parseInitData(initDataRaw);
     setInitData(parsedInitData);
+    tg.MainButton.setText("Click Me");
+    tg.MainButton.show();
+    tg.MainButton.onClick(() => {
+      tg.sendData("Button clicked!"); // 可以用来发送数据到父级的 Telegram 聊天
+      alert("Main Button clicked!");
+    });
+
+    return () => {
+      tg.MainButton.offClick();
+    };
   }, []);
 
   const parseInitData = (data) => {
