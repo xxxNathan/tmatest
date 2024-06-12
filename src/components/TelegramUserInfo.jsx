@@ -21,7 +21,7 @@ const TelegramUserInfo = () => {
       {user ? (
         <p>
           Hello, {user.first_name} {user.last_name} (@{user.username})
-          <div>{user}</div>
+          <code>{user}</code>
         </p>
       ) : (
         <p>Loading user info...</p>

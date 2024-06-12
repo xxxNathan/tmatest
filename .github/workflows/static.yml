@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # 上传 dist 库
-          path: "./docs"
+          path: "./dist"
       - name: 部署到 GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
