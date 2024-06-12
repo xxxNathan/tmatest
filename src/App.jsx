@@ -1,16 +1,16 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+
 import "./App.css";
 
 import WebApp from "@twa-dev/sdk";
-
+import TelegramUserInfo from "./components/TelegramUserInfo";
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <>
       <h1>xxxNathan_tma_bot</h1>
+      <TelegramUserInfo />
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           计数是 {count}
