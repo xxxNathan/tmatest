@@ -21,6 +21,9 @@ const TelegramUserInfo = () => {
       {user ? (
         <p>
           Hello, {user.first_name} {user.last_name} (@{user.username})
+          <pre>
+            <code>{JSON.stringify(user, null, 2)}</code>
+          </pre>
         </p>
       ) : (
         <p>Loading user info...</p>
