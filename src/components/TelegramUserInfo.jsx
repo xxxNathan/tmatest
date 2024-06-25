@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 
 const TelegramUserInfo = () => {
   const [initData, setInitData] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const tg = window.Telegram.WebApp;
     tg.ready();
 
     const initDataRaw = tg.initData;
-    const parsedInitData = parseInitData(initDataRaw);
-    setInitData(parsedInitData);
+    // const parsedInitData = parseInitData(tg?.initDataUnsafe?.hash);
+    setInitData(parseInitData(initDataRaw));
+    setUserData(tg.initData);
     tg.MainButton.setText("Click Me");
     tg.MainButton.show();
     tg.MainButton.onClick(() => {
@@ -42,6 +44,9 @@ const TelegramUserInfo = () => {
           <h2>Init Data</h2>
           <pre>
             <code>{JSON.stringify(initData, null, 2)}</code>
+          </pre>
+          <pre>
+            <code>{JSON.stringify(userData, null, 2)}</code>
           </pre>
         </div>
       ) : (
