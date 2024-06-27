@@ -1,4 +1,3 @@
-// useTelegram.js
 import { useState, useEffect } from "react";
 
 const useTelegram = () => {
@@ -10,7 +9,7 @@ const useTelegram = () => {
     if (window.Telegram && window.Telegram.WebApp) {
       tg.ready();
       setIsTma(true);
-      setInitData(tg.initData);
+      setInitData(tg);
     }
   }, []);
 
