@@ -18,8 +18,8 @@ export default defineConfig({
   server: {
     https: false,
     proxy: {
-      "/v1": {
-        target: "http://7cdwv7.natappfree.cc/v1/",
+      "^/v1": {
+        target: "https://orca-summary-oryx.ngrok-free.app/v1/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/v1/, ""),
       },
