@@ -19,7 +19,7 @@ export default defineConfig({
     https: false,
     proxy: {
       "/v1": {
-        target: "http://tr5bwq.natappfree.cc/v1/",
+        target: "http://7cdwv7.natappfree.cc/v1/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/v1/, ""),
       },
