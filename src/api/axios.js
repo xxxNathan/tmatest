@@ -14,10 +14,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    // console.log("api.interceptors,token,", token);
     if (token) {
-      // console.log(config.headers);
-      // console.log(`Bearer ${token}`); // 打印 token
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

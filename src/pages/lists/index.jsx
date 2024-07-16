@@ -1,11 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import { $get } from "@/api/axios";
-import iconFav from "@/assets/images/icon-fav.png";
+import { useLocation } from "react-router-dom";
 const Home = () => {
-  // const [userInfo, setUserInfo] = useState(null);
+  const [list, setList] = useState([]);
   // const [isLoading, setIsLoading] = useState(false);
-  // Category;
+
+  const location = useLocation();
+  const { name } = location.state || {};
   useEffect(() => {
     console.log("token");
     const token = localStorage.getItem("token") || false;
@@ -14,28 +16,54 @@ const Home = () => {
       console.log("v1/categories", response);
     }
   }, []);
-
+  useEffect(() => {
+    (async () => {
+      console.log("name", name);
+      if (name == "new") {
+        const newRes = await $get("/mini_apps/new");
+        setList(newRes.data.list);
+      } else if (name == "hot") {
+        const hotRes = await $get("/mini_apps/hot");
+        setList(hotRes.data.list);
+      } else {
+        const categoryRes = await $get(`/mini_apps?category_id=${name}`);
+        console.log("categoryRes", categoryRes.data);
+        setList(categoryRes.data.list);
+      }
+    })();
+  }, [name]);
+  const onOpen = async (bot) => {
+    console.log("WebApp", window.Telegram.WebApp);
+    window.Telegram.WebApp.openTelegramLink(bot);
+  };
   return (
     <div className="flex flex-col w-full overflow-x-hidden">
-      <div className="flex flex-col ">
-        <div className="flex justify-between flex-row p-5 items-center mt-2">
-          <h1 className="text-4xl">New</h1>
-          {/* <span className="text-2xl text-sky-600">查看全部</span> */}
-        </div>
-        <div className="flex flex-col px-5">
-          <div className="flex items-center">
-            <img className="w-24 h-24 mr-4" src={iconFav} alt="" />
+      <div className="flex flex-col p-20">
+        {list &&
+          list.length > 0 &&
+          list.map((item, i) => {
+            return (
+              <div className="flex items-center mb-20" key={i}>
+                <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
 
-            <div className="flex-1 overflow-hidden">
-              <h3 className="text-xl font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">Title</h3>
-              <span className="w-16 h-16 bg-sky-600 text-white text-lg py-1 px-2 rounded-lg">新</span>
-              <p className="text-lg text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
-                DescriptionDescriptionDescriptionDescriptionDescription
-              </p>
-            </div>
-            <button className="ml-4 px-4 py-2 bg-blue-500 text-white text-xl rounded-full">打开</button>
-          </div>
-        </div>
+                <div className="flex-1 overflow-hidden flex flex-col justify-center">
+                  <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">{item.name}</h3>
+
+                  <p className="text-14 text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
+                    {item.description}
+                  </p>
+                </div>
+                <button
+                  className="ml-20 px-15 py-6 bg-blue-500 text-white text-14 rounded-2xl"
+                  onClick={() => {
+                    onOpen(item.bot);
+                  }}
+                >
+                  打开
+                </button>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

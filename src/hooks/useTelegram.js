@@ -9,7 +9,7 @@ const useTelegram = () => {
     if (window.Telegram && window.Telegram.WebApp) {
       tg.ready();
       setIsTma(true);
-      setInitData(tg);
+      setInitData(tg.initData);
     }
   }, []);
 

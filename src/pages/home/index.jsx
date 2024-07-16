@@ -1,131 +1,202 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import { $get } from "@/api/axios";
-import searchIcon from "@/assets/images/search-icon.png";
-import iconFav from "@/assets/images/icon-fav.png";
-import img1 from "@/assets/images/img1.png";
-import img2 from "@/assets/images/img2.png";
-import img3 from "@/assets/images/img3.png";
 import { useNavigate } from "react-router-dom";
+
 const Home = () => {
   const navigate = useNavigate();
-  // const [userInfo, setUserInfo] = useState(null);
+  const [categorieList, setCategorieList] = useState([]);
+  const [newList, setNewList] = useState([]);
+  const [hotList, setHotList] = useState([]);
+  const [hotCate, setHotCate] = useState([]);
+  const [cateName, setName] = useState("");
+
   // const [isLoading, setIsLoading] = useState(false);
-  // Category;
+
   const handleButtonClick = () => {
     navigate("/lists");
   };
   useEffect(() => {
-    console.log("token");
-    const token = localStorage.getItem("token") || false;
-    if (token) {
-      const response = $get("categories");
-      console.log("v1/categories---------------", response);
-    }
-  }, []);
+    (async () => {
+      console.log("token");
+      const token = localStorage.getItem("token") || false;
+      if (token) {
+        if (categorieList.length > 0) return false;
+        const categoryRes = await $get("categories");
+        console.log("v1/categories---------------", categoryRes);
+        setCategorieList(categoryRes.data.list);
 
+        const newRes = await $get("/mini_apps/new");
+        setNewList(newRes.data.list);
+        const hotRes = await $get("/mini_apps/hot");
+        setHotList(hotRes.data.list);
+        console.log("hotRes", hotRes.data.list);
+
+        const hostCateRes = await $get("/mini_apps/hot_category");
+        console.log("v1/categories---------------", hostCateRes.data.list[0]);
+        setHotCate(hostCateRes.data.list[0].apps);
+        setName(hostCateRes.data.list[0].category.name);
+      }
+    })();
+  }, []);
+  const onCategories = async (name) => {
+    navigate("/lists", { state: { name: name } });
+  };
+  const onOpen = async (bot) => {
+    console.log("WebApp", window.Telegram.WebApp);
+    window.Telegram.WebApp.openTelegramLink(bot);
+  };
   return (
     <div className="flex flex-col w-full overflow-x-hidden">
-      <div className="flex  p-5 w-full ">
-        <div className="bg-gray-200 w-full h-16 rounded-xl flex flex-row items-center px-5">
-          <img className="mr-4" src={searchIcon} alt="Search Icon" />
+      {/* <div className="flex p-20 w-full ">
+        <div className="bg-gray-200 w-full h-38 rounded-xl flex flex-row items-center px-20">
           <span>搜索</span>
         </div>
+      </div> */}
+      <div className="flex flex-row overflow-x-scroll pl-5 w-full my-10 mt-20">
+        {/* categories */}
+        {categorieList.length > 0 &&
+          categorieList.map((item, i) => {
+            return (
+              <div
+                key={i}
+                className="py-4 h-36 flex-shrink-0 whitespace-nowrap  px-20 shadow-inner border-1 border-gray-100 bg-white rounded-xl mr-4 flex flex-row items-center"
+                onClick={() => {
+                  onCategories(item.id);
+                }}
+              >
+                <img className="mr-5 w-16 h-16 rounded-xl" src={item.logo_url} alt="" />
+                <span className="text-14">{item.name}</span>
+              </div>
+            );
+          })}
       </div>
-      <div className="flex flex-row overflow-x-scroll pl-5 w-full my-2">
-        <div className="py-2 flex-shrink-0 whitespace-nowrap  px-4 shadow-inner border-1 border-gray-100 bg-white rounded-xl mr-4 flex flex-row items-center">
-          <img className="mr-2" src={iconFav} alt="" />
-          <span>The Open Lasd</span>
+      {/* <div className="flex flex-col ">
+        <div className="flex justify-between flex-row p-20 items-center ">
+          <h1 className="text-18">最近打开</h1>
         </div>
-        <div className="py-2 flex-shrink-0 whitespace-nowrap  px-4 shadow-inner border-1 border-gray-100 bg-white rounded-xl mr-4 flex flex-row items-center">
-          <img className="mr-2" src={iconFav} alt="" />
-          <span>推荐1</span>
+        <div className="flex flex-row overflow-x-scroll pl-10 w-full py-5">
+          <div className="flex flex-col mr-8 items-center justify-center w-80 flex-shrink-0">
+            <img className="w-60 h-60 rounded-xl" src={img1} alt="" />
+            <span className="text-2xl mt-2 text-ellipsis overflow-hidden w-full">namenamenamename</span>
+          </div>
         </div>
-        <div className="py-2 flex-shrink-0 whitespace-nowrap  px-4 shadow-inner border-1 border-gray-100 bg-white rounded-xl mr-4 flex flex-row items-center">
-          <img className="mr-2" src={iconFav} alt="" />
-          <span>推荐1</span>
-        </div>
-        <div className="py-2 flex-shrink-0 whitespace-nowrap  px-4 shadow-inner border-1 border-gray-100 bg-white rounded-xl mr-4 flex flex-row items-center">
-          <img className="mr-2" src={iconFav} alt="" />
-          <span>推荐1</span>
-        </div>
-        <div className="py-2 flex-shrink-0 whitespace-nowrap  px-4 shadow-inner border-1 border-gray-100 bg-white rounded-xl mr-4 flex flex-row items-center">
-          <img className="mr-2" src={iconFav} alt="" />
-          <span>推荐1</span>
-        </div>
-        <div className="py-2 flex-shrink-0 whitespace-nowrap  px-4 shadow-inner border-1 border-gray-100 bg-white rounded-xl mr-4 flex flex-row items-center">
-          <img className="mr-2" src={iconFav} alt="" />
-          <span>推荐1</span>
-        </div>
-      </div>
+      </div> */}
       <div className="flex flex-col ">
-        <div className="flex justify-between flex-row p-5 items-center mt-2">
-          <h1 className="text-4xl">New</h1>
-          <span className="text-2xl text-sky-600" onClick={handleButtonClick}>
+        <div className="flex justify-between flex-row p-20 items-center ">
+          <h1 className="text-20">New</h1>
+          <span
+            className="text-14 text-sky-600"
+            onClick={() => {
+              onCategories("new");
+            }}
+          >
             查看全部
           </span>
         </div>
-        <div className="flex flex-row overflow-x-scroll pl-5 w-full py-5">
-          <div className="flex flex-col mr-8 items-center justify-center w-28 flex-shrink-0">
-            <img className="w-28 h-28 rounded-xl" src={img1} alt="" />
-            <span className="text-2xl mt-2 text-ellipsis overflow-hidden w-full">
-              namenamenamename
-            </span>
-          </div>
-          <div className="flex flex-col mr-8 items-center justify-center w-28 flex-shrink-0">
-            <img className="w-28 h-28 rounded-xl" src={img2} alt="" />
-            <span className="text-2xl mt-2 text-ellipsis overflow-hidden w-full text-center">
-              aaa
-            </span>
-          </div>
-          <div className="flex flex-col mr-8 items-center justify-center w-28 flex-shrink-0">
-            <img className="w-28 h-28 rounded-xl" src={img3} alt="" />
-            <span className="text-2xl mt-2 text-ellipsis overflow-hidden w-full text-center">
-              aaa
-            </span>
-          </div>
-          <div className="flex flex-col mr-8 items-center justify-center w-28 flex-shrink-0">
-            <img className="w-28 h-28 rounded-xl" src={img1} alt="" />
-            <span className="text-2xl mt-2 text-ellipsis overflow-hidden w-full text-center">
-              aaa
-            </span>
-          </div>
-          <div className="flex flex-col mr-8 items-center justify-center w-28 flex-shrink-0">
-            <img className="w-28 h-28 rounded-xl" src={img2} alt="" />
-            <span className="text-2xl mt-2 text-ellipsis overflow-hidden w-full text-center">
-              aaa
-            </span>
-          </div>
-          <div className="flex flex-col mr-8 items-center justify-center w-28 flex-shrink-0">
-            <img className="w-28 h-28 rounded-xl" src={img3} alt="" />
-            <span className="text-2xl mt-2 text-ellipsis overflow-hidden w-full text-center">
-              aaa
-            </span>
-          </div>
+        <div className="flex flex-col px-20">
+          {newList.length > 0 &&
+            newList.slice(0, 3).map((item, i) => {
+              return (
+                <div className="flex items-center mb-20" key={i}>
+                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
+
+                  <div className="flex-1 overflow-hidden flex flex-col justify-center">
+                    <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      {item.name}
+                    </h3>
+
+                    <p className="text-14 text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
+                      {item.description}
+                    </p>
+                  </div>
+                  <button
+                    className="ml-20 px-15 py-6 bg-blue-500 text-white text-14 rounded-2xl"
+                    onClick={() => {
+                      onOpen(item.bot);
+                    }}
+                  >
+                    打开
+                  </button>
+                </div>
+              );
+            })}
         </div>
       </div>
+
       <div className="flex flex-col ">
-        <div className="flex justify-between flex-row p-5 items-center mt-2">
-          <h1 className="text-4xl">New</h1>
-          <span className="text-2xl text-sky-600">查看全部</span>
+        <div className="flex justify-between flex-row p-20 items-center ">
+          <h1 className="text-20">Hot</h1>
+          <span
+            className="text-14 text-sky-600"
+            onClick={() => {
+              onCategories("hot");
+            }}
+          >
+            查看全部
+          </span>
         </div>
-        <div className="flex flex-col px-5">
-          <div className="flex items-center">
-            <img className="w-24 h-24 mr-4 rounded-xl" src={img1} alt="" />
+        <div className="flex flex-col px-20">
+          {hotList.length > 0 &&
+            hotList.slice(0, 3).map((item, i) => {
+              return (
+                <div className="flex items-center mb-20" key={i}>
+                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
 
-            <div className="flex-1 overflow-hidden">
-              <h3 className="text-3xl font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
-                Title
-              </h3>
+                  <div className="flex-1 overflow-hidden flex flex-col justify-center">
+                    <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      {item.name}
+                    </h3>
 
-              <p className="text-xl text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
-                DescriptionDescriptionDescriptionDescriptionDescription
-              </p>
-            </div>
-            <button className="ml-4 px-8 py-4 bg-blue-500 text-white text-2xl rounded-2xl">
-              打开
-            </button>
-          </div>
+                    <p className="text-14 text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
+                      {item.description}
+                    </p>
+                  </div>
+                  <button
+                    className="ml-20 px-15 py-6 bg-blue-500 text-white text-14 rounded-2xl"
+                    onClick={() => {
+                      onOpen(item.bot);
+                    }}
+                  >
+                    打开
+                  </button>
+                </div>
+              );
+            })}
+        </div>
+      </div>
+
+      <div className="flex flex-col ">
+        <div className="flex justify-between flex-row p-20 items-center ">
+          <h1 className="text-20">{cateName ? cateName : ""}</h1>
+        </div>
+        <div className="flex flex-col px-20">
+          {hotCate.length > 0 &&
+            hotCate.map((item, i) => {
+              return (
+                <div className="flex items-center mb-20" key={i}>
+                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
+
+                  <div className="flex-1 overflow-hidden flex flex-col justify-center">
+                    <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      {item.name}
+                    </h3>
+
+                    <p className="text-14 text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
+                      {item.description}
+                    </p>
+                  </div>
+                  <button
+                    className="ml-20 px-15 py-6 bg-blue-500 text-white text-14 rounded-2xl"
+                    onClick={() => {
+                      onOpen(item.bot);
+                    }}
+                  >
+                    打开
+                  </button>
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>
