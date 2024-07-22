@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
-import { $get } from "@/api/axios";
+import { $get, $post } from "@/api/axios";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -16,6 +16,38 @@ const Home = () => {
   const handleButtonClick = () => {
     navigate("/lists");
   };
+  const onInvitationCode = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const inviteCode = urlParams.get("invite_code");
+
+    if (inviteCode) {
+      $post("users/invitation_code", { code: inviteCode })
+        .then((response) => {
+          console.log("users/invitation_code", response);
+        })
+        .catch((error) => {
+          console.error("Error initializing user:", error);
+        });
+    }
+  };
+  const getUserPoints = async () => {
+    const response = await $get("users/points");
+    console.log("users/points", response);
+  };
+  const onOpenTMA = async () => {
+    $post("operation_logs", {
+      source: "NEW_RECOMMENDED",
+      target: "MINI_APP",
+      target_id: "1",
+      operation: "OPEN_MINI_APP",
+    })
+      .then((response) => {
+        console.log("operation_logs", response);
+      })
+      .catch((error) => {
+        console.error("Error initializing user:", error);
+      });
+  };
   useEffect(() => {
     (async () => {
       console.log("token");
@@ -24,7 +56,7 @@ const Home = () => {
         if (categorieList.length > 0) return false;
         const categoryRes = await $get("categories");
         console.log("v1/categories---------------", categoryRes);
-        setCategorieList(categoryRes.data.list);
+        setCategorieList(categoryRes?.data?.list);
 
         const newRes = await $get("/mini_apps/new");
         setNewList(newRes.data.list);
@@ -36,6 +68,9 @@ const Home = () => {
         console.log("v1/categories---------------", hostCateRes.data.list[0]);
         setHotCate(hostCateRes.data.list[0].apps);
         setName(hostCateRes.data.list[0].category.name);
+        await onInvitationCode();
+        await getUserPoints();
+        await onOpenTMA();
       }
     })();
   }, []);
@@ -45,6 +80,9 @@ const Home = () => {
   const onOpen = async (bot) => {
     console.log("WebApp", window.Telegram.WebApp);
     window.Telegram.WebApp.openTelegramLink(bot);
+  };
+  const goTask = async () => {
+    navigate("/task");
   };
   return (
     <div className="flex flex-col w-full overflow-x-hidden">
@@ -82,6 +120,14 @@ const Home = () => {
           </div>
         </div>
       </div> */}
+      <div
+        onClick={() => {
+          goTask();
+        }}
+        className="flex justify-between flex-row p-20 items-center "
+      >
+        打开积分
+      </div>
       <div className="flex flex-col ">
         <div className="flex justify-between flex-row p-20 items-center ">
           <h1 className="text-20">New</h1>

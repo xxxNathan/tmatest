@@ -3,15 +3,31 @@ import React, { useState, useEffect } from "react";
 import { $get } from "@/api/axios";
 import IconPoints from "@/assets/images/icon_points.png";
 import IconSuccess from "@/assets/images/icon_success.png";
-const Home = () => {
+const Task = () => {
+  const [inviteCode, setInviteCode] = useState(null);
   useEffect(() => {
     (async () => {
-      const response = await $get("users/task_details");
-      console.log("users/task_details", response.data);
-      console.log("users/task_details", response.data.list);
+      const getTask = await $get("users/task_details");
+      console.log("users/task_details", getTask.data);
+      console.log("users/task_details", getTask.data.list);
+      const getInvitation = await $get("users/invitation_code");
+      console.log("getInvitation", getInvitation?.data?.code);
+
+      setInviteCode(getInvitation?.data?.code);
     })();
   }, []);
+  const onShare = async () => {
+    // https://9ffb-103-84-217-97.ngrok-free.app
+    // https://t.me/actest111_bot
+    // actest111_bot
+    // acTitle
 
+    const url = `https://t.me/actest111_bot/ACName?inviteCode=${inviteCode}`;
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(
+      "分享app center啊啊啊啊 "
+    )}`;
+    window.Telegram.WebApp.openTelegramLink(shareUrl);
+  };
   return (
     <div className="flex flex-col w-full ">
       <div className="flex flex-col mt-20">
@@ -27,27 +43,33 @@ const Home = () => {
               </div>
             </div>
           </div>
-
-          <div className="flex flex-col mt-20">
-            <div className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-20 rounded-xl">
-              <div className="flex flex-row items-center jusity-center">
-                <div className="w-24 h-24 bg-pGrey rounded-full bg-white"></div>
-                <span className=" ml-10 text-black ">New Recommend</span>
+          {inviteCode && (
+            <div className="flex flex-col mt-20">
+              <div
+                className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-20 rounded-xl"
+                onClick={() => {
+                  onShare();
+                }}
+              >
+                <div className="flex flex-row items-center jusity-center">
+                  <div className="w-24 h-24 bg-pGrey rounded-full bg-white"></div>
+                  <span className=" ml-10 text-black ">New Recommend</span>
+                </div>
+                <div className="text-gray-500">0/3 ></div>
               </div>
-              <div className="text-gray-500">0/3 ></div>
-            </div>
-            <div className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-20 rounded-xl">
-              <div className="flex flex-row items-center jusity-center">
-                <div className="w-24 h-24 bg-pGrey rounded-full bg-white"></div>
-                <span className=" ml-10 text-black ">New Recommend</span>
+              <div className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-20 rounded-xl">
+                <div className="flex flex-row items-center jusity-center">
+                  <div className="w-24 h-24 bg-pGrey rounded-full bg-white"></div>
+                  <span className=" ml-10 text-black ">New Recommend</span>
+                </div>
+                <img className="w-20 h-20" src={IconSuccess} alt="Search Icon" />
               </div>
-              <img className="w-20 h-20" src={IconSuccess} alt="Search Icon" />
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default Task;

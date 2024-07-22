@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { $get } from "@/api/axios";
 import { useLocation } from "react-router-dom";
-const Home = () => {
+const Lists = () => {
   const [list, setList] = useState([]);
   // const [isLoading, setIsLoading] = useState(false);
 
@@ -69,4 +69,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Lists;

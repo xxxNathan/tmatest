@@ -8,25 +8,14 @@ let init_data =
 const App = () => {
   const { isTma, initData } = useTelegram();
   const [token, setToken] = useState(false);
-  // console.log("isTma", isTma, initData);
+
   useEffect(() => {
+    console.log("isTma", isTma, initData);
     if (isTma && initData) {
-      // console.log("initData", initData.initData);
       localStorage.removeItem("token");
       $post("users/auth", { init_data: initData })
         .then((response) => {
           console.log("users/auth", response);
-          // console.log("response", response);
-          localStorage.setItem("token", response.data.token);
-          setToken(response.data.token);
-        })
-        .catch((error) => {
-          console.error("Error initializing user:", error);
-        });
-    } else {
-      // web
-      $post("users/auth", { init_data: init_data })
-        .then((response) => {
           localStorage.setItem("token", response.data.token);
           setToken(response.data.token);
         })
@@ -36,18 +25,18 @@ const App = () => {
     }
   }, [isTma, initData]);
 
-  // useEffect(() => {
-  //   localStorage.removeItem("token");
-  // $post("users/auth", { init_data: init_data })
-  //   .then((response) => {
-  //     // console.log("response", response);
-  //     localStorage.setItem("token", response.data.token);
-  //     setToken(response.data.token);
-  //   })
-  //   .catch((error) => {
-  //     console.error("Error initializing user:", error);
-  //   });
-  // }, []);
+  useEffect(() => {
+    localStorage.removeItem("token");
+    $post("users/auth", { init_data: init_data })
+      .then((response) => {
+        console.log("users/auth", response);
+        localStorage.setItem("token", response.data.token);
+        setToken(response.data.token);
+      })
+      .catch((error) => {
+        console.error("Error initializing user:", error);
+      });
+  }, []);
 
   // return <div className="App">{token && <Home token={token}></Home>}</div>;
   return (
