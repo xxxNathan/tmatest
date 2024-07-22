@@ -11,38 +11,18 @@ const Home = () => {
   const [hotCate, setHotCate] = useState([]);
   const [cateName, setName] = useState("");
 
-  // const [isLoading, setIsLoading] = useState(false);
+  const onOpenTMA = async (bot) => {
+    console.log("onOpenTMA", bot);
 
-  const handleButtonClick = () => {
-    navigate("/lists");
-  };
-  const onInvitationCode = async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const inviteCode = urlParams.get("invite_code");
-
-    if (inviteCode) {
-      $post("users/invitation_code", { code: inviteCode })
-        .then((response) => {
-          console.log("users/invitation_code", response);
-        })
-        .catch((error) => {
-          console.error("Error initializing user:", error);
-        });
-    }
-  };
-  const getUserPoints = async () => {
-    const response = await $get("users/points");
-    console.log("users/points", response);
-  };
-  const onOpenTMA = async () => {
     $post("operation_logs", {
-      source: "NEW_RECOMMENDED",
+      source: bot.tag,
       target: "MINI_APP",
-      target_id: "1",
+      target_id: bot.id,
       operation: "OPEN_MINI_APP",
     })
-      .then((response) => {
-        console.log("operation_logs", response);
+      .then((res) => {
+        console.log("res", res);
+        window.Telegram.WebApp.openTelegramLink(bot.bot);
       })
       .catch((error) => {
         console.error("Error initializing user:", error);
@@ -68,19 +48,15 @@ const Home = () => {
         console.log("v1/categories---------------", hostCateRes.data.list[0]);
         setHotCate(hostCateRes.data.list[0].apps);
         setName(hostCateRes.data.list[0].category.name);
-        await onInvitationCode();
-        await getUserPoints();
-        await onOpenTMA();
+        // await onInvitationCode();
+        // await getUserPoints();
       }
     })();
   }, []);
   const onCategories = async (name) => {
     navigate("/lists", { state: { name: name } });
   };
-  const onOpen = async (bot) => {
-    console.log("WebApp", window.Telegram.WebApp);
-    window.Telegram.WebApp.openTelegramLink(bot);
-  };
+
   const goTask = async () => {
     navigate("/task");
   };
@@ -103,7 +79,11 @@ const Home = () => {
                   onCategories(item.id);
                 }}
               >
-                <img className="mr-5 w-16 h-16 rounded-xl" src={item.logo_url} alt="" />
+                <img
+                  className="mr-5 w-16 h-16 rounded-xl"
+                  src={item.logo_url}
+                  alt=""
+                />
                 <span className="text-14">{item.name}</span>
               </div>
             );
@@ -111,7 +91,7 @@ const Home = () => {
       </div>
       {/* <div className="flex flex-col ">
         <div className="flex justify-between flex-row p-20 items-center ">
-          <h1 className="text-18">最近打开</h1>
+          <h1 className="text-18">最近Open</h1>
         </div>
         <div className="flex flex-row overflow-x-scroll pl-10 w-full py-5">
           <div className="flex flex-col mr-8 items-center justify-center w-80 flex-shrink-0">
@@ -124,9 +104,9 @@ const Home = () => {
         onClick={() => {
           goTask();
         }}
-        className="flex justify-between flex-row p-20 items-center "
+        className="flex justify-between flex-row py-12 px-30 items-center fixed bottom-50 bg-blue-500 rounded-2xl left-1/2 -ml-80 text-white text-3xl"
       >
-        打开积分
+        Task Center
       </div>
       <div className="flex flex-col ">
         <div className="flex justify-between flex-row p-20 items-center ">
@@ -137,7 +117,7 @@ const Home = () => {
               onCategories("new");
             }}
           >
-            查看全部
+            see all
           </span>
         </div>
         <div className="flex flex-col px-20">
@@ -145,7 +125,11 @@ const Home = () => {
             newList.slice(0, 3).map((item, i) => {
               return (
                 <div className="flex items-center mb-20" key={i}>
-                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
+                  <img
+                    className="w-50 h-50 mr-10 rounded-xl"
+                    src={item.logo_url}
+                    alt=""
+                  />
 
                   <div className="flex-1 overflow-hidden flex flex-col justify-center">
                     <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
@@ -159,10 +143,10 @@ const Home = () => {
                   <button
                     className="ml-20 px-15 py-6 bg-blue-500 text-white text-14 rounded-2xl"
                     onClick={() => {
-                      onOpen(item.bot);
+                      onOpenTMA(item);
                     }}
                   >
-                    打开
+                    Open
                   </button>
                 </div>
               );
@@ -179,7 +163,7 @@ const Home = () => {
               onCategories("hot");
             }}
           >
-            查看全部
+            see all
           </span>
         </div>
         <div className="flex flex-col px-20">
@@ -187,7 +171,11 @@ const Home = () => {
             hotList.slice(0, 3).map((item, i) => {
               return (
                 <div className="flex items-center mb-20" key={i}>
-                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
+                  <img
+                    className="w-50 h-50 mr-10 rounded-xl"
+                    src={item.logo_url}
+                    alt=""
+                  />
 
                   <div className="flex-1 overflow-hidden flex flex-col justify-center">
                     <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
@@ -201,10 +189,10 @@ const Home = () => {
                   <button
                     className="ml-20 px-15 py-6 bg-blue-500 text-white text-14 rounded-2xl"
                     onClick={() => {
-                      onOpen(item.bot);
+                      onOpenTMA(item);
                     }}
                   >
-                    打开
+                    Open
                   </button>
                 </div>
               );
@@ -221,7 +209,11 @@ const Home = () => {
             hotCate.map((item, i) => {
               return (
                 <div className="flex items-center mb-20" key={i}>
-                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
+                  <img
+                    className="w-50 h-50 mr-10 rounded-xl"
+                    src={item.logo_url}
+                    alt=""
+                  />
 
                   <div className="flex-1 overflow-hidden flex flex-col justify-center">
                     <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
@@ -235,10 +227,10 @@ const Home = () => {
                   <button
                     className="ml-20 px-15 py-6 bg-blue-500 text-white text-14 rounded-2xl"
                     onClick={() => {
-                      onOpen(item.bot);
+                      onOpenTMA(item);
                     }}
                   >
-                    打开
+                    Open
                   </button>
                 </div>
               );
