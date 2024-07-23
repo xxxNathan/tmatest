@@ -2,7 +2,7 @@ import axios from "axios";
 
 // 创建一个 Axios 实例
 const api = axios.create({
-  baseURL: "http://3spfbw.natappfree.cc/v1/",
+  baseURL: "https://orca-summary-oryx.ngrok-free.app/v1/",
   // baseURL: "/v1",
   timeout: 10000,
   headers: {
