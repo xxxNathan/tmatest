@@ -10,43 +10,43 @@ const App = ({ initialInviteCode }) => {
   const { isTma, initData } = useTelegram();
   const [token, setToken] = useState(false);
 
-  // useEffect(() => {
-  //   console.log("isTma", isTma, initData);
-  //   (async () => {
-  //     if (isTma && initData) {
-  //       // await $post("users/auth", { init_data: init_data })
-  //       await $post("users/auth", { init_data: initData })
-  //         .then(async (response) => {
-  //           console.log("users/auth", response);
-  //           localStorage.setItem("token", response.data.token);
-  //           await setToken(response.data.token);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error initializing user:", error);
-  //         });
-  //       await $post("users/invitation_code", { code: initialInviteCode })
-  //         .then((response) => {
-  //           console.log("users/invitation_code--------", response);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error initializing user:", error);
-  //         });
-  //     }
-  //   })();
-  // }, [isTma, initData]);
-
   useEffect(() => {
-    localStorage.removeItem("token");
-    $post("users/auth", { init_data: init_data })
-      .then((response) => {
-        console.log("users/auth", response);
-        localStorage.setItem("token", response.data.token);
-        setToken(response.data.token);
-      })
-      .catch((error) => {
-        console.error("Error initializing user:", error);
-      });
-  }, []);
+    console.log("isTma", isTma, initData);
+    (async () => {
+      if (isTma && initData) {
+        // await $post("users/auth", { init_data: init_data })
+        await $post("users/auth", { init_data: initData })
+          .then(async (response) => {
+            console.log("users/auth", response);
+            localStorage.setItem("token", response.data.token);
+            await setToken(response.data.token);
+          })
+          .catch((error) => {
+            console.error("Error initializing user:", error);
+          });
+        await $post("users/invitation_code", { code: initialInviteCode })
+          .then((response) => {
+            console.log("users/invitation_code--------", response);
+          })
+          .catch((error) => {
+            console.error("Error initializing user:", error);
+          });
+      }
+    })();
+  }, [isTma, initData]);
+
+  // useEffect(() => {
+  //   localStorage.removeItem("token");
+  //   $post("users/auth", { init_data: init_data })
+  //     .then((response) => {
+  //       console.log("users/auth", response);
+  //       localStorage.setItem("token", response.data.token);
+  //       setToken(response.data.token);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error initializing user:", error);
+  //     });
+  // }, []);
 
   // return <div className="App">{token && <Home token={token}></Home>}</div>;
   return (

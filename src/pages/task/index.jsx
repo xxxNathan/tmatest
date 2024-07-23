@@ -76,7 +76,7 @@ const Task = () => {
           </div>
           <div className="flex flex-col mt-20">
             <div
-              className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-20 rounded-xl"
+              className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-15 rounded-xl"
               onClick={() => {
                 onShare();
               }}
@@ -94,7 +94,7 @@ const Task = () => {
                 return (
                   <div
                     key={i}
-                    className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-20 rounded-xl"
+                    className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-15 rounded-xl"
                     onClick={() => {
                       onTask(item);
                     }}
@@ -102,7 +102,7 @@ const Task = () => {
                     <div className="flex flex-row items-center jusity-center">
                       <div className="w-24 h-24 bg-pGrey rounded-full bg-white"></div>
                       <span className=" ml-10 text-black text-14 ">
-                        {item.task.source}
+                        {item.task.name}
                       </span>
                     </div>
                     {item.completed ? (

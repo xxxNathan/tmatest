@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
+  // eslint-disable-next-line no-unused-vars
   const [categorieList, setCategorieList] = useState([]);
   const [newList, setNewList] = useState([]);
   const [hotList, setHotList] = useState([]);
@@ -33,10 +34,10 @@ const Home = () => {
       console.log("token");
       const token = localStorage.getItem("token") || false;
       if (token) {
-        if (categorieList.length > 0) return false;
-        const categoryRes = await $get("categories");
-        console.log("v1/categories---------------", categoryRes);
-        setCategorieList(categoryRes?.data?.list);
+        // if (categorieList.length > 0) return false;
+        // const categoryRes = await $get("categories");
+        // console.log("v1/categories---------------", categoryRes);
+        // setCategorieList(categoryRes?.data?.list);
 
         const newRes = await $get("/mini_apps/new");
         setNewList(newRes.data.list);
@@ -104,7 +105,7 @@ const Home = () => {
         onClick={() => {
           goTask();
         }}
-        className="flex justify-between flex-row py-12 px-30 items-center fixed bottom-50 bg-blue-500 rounded-2xl left-1/2 -ml-80 text-white text-3xl"
+        className="flex justify-between flex-row py-10 px-20 items-center fixed bottom-50 bg-blue-500 rounded-2xl left-1/2 -ml-60 text-white text-16"
       >
         Task Center
       </div>
@@ -112,12 +113,12 @@ const Home = () => {
         <div className="flex justify-between flex-row p-20 items-center ">
           <h1 className="text-20">New</h1>
           <span
-            className="text-14 text-sky-600"
+            className="text-16 text-sky-600"
             onClick={() => {
               onCategories("new");
             }}
           >
-            see all
+            See All
           </span>
         </div>
         <div className="flex flex-col px-20">
@@ -158,12 +159,12 @@ const Home = () => {
         <div className="flex justify-between flex-row p-20 items-center ">
           <h1 className="text-20">Hot</h1>
           <span
-            className="text-14 text-sky-600"
+            className="text-16 text-sky-600"
             onClick={() => {
               onCategories("hot");
             }}
           >
-            see all
+            See All
           </span>
         </div>
         <div className="flex flex-col px-20">
