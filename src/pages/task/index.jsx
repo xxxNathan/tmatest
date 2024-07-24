@@ -3,6 +3,13 @@ import React, { useState, useEffect } from "react";
 import { $get } from "@/api/axios";
 import IconPoints from "@/assets/images/icon_points.png";
 import IconSuccess from "@/assets/images/icon_success.png";
+import TaskIcon1 from "@/assets/images/task_icon1.png";
+import TaskIcon2 from "@/assets/images/task_icon2.png";
+import TaskIcon3 from "@/assets/images/task_icon3.png";
+import TaskIcon4 from "@/assets/images/task_icon4.png";
+import TaskIcon5 from "@/assets/images/task_icon5.png";
+import TaskIcon6 from "@/assets/images/task_icon6.png";
+import TaskIcon7 from "@/assets/images/task_icon7.png";
 import useTelegram from "@/hooks/useTelegram";
 const Task = () => {
   const { isTma, initData } = useTelegram();
@@ -10,6 +17,15 @@ const Task = () => {
   const [taskList, setTaskList] = useState([]);
   const [userPoints, setUserPoints] = useState(null);
   const [showInitData, setInitData] = useState(null);
+  const taskIcons = [
+    TaskIcon1,
+    TaskIcon2,
+    TaskIcon3,
+    TaskIcon4,
+    TaskIcon5,
+    TaskIcon6,
+    TaskIcon7,
+  ];
   useEffect(() => {
     console.log("isTma", isTma, initData);
     if (isTma && initData) {
@@ -53,9 +69,9 @@ const Task = () => {
 
   return (
     <div className="flex flex-col w-full ">
-      <div className="flex flex-col mt-20">
-        <div className="flex flex-col px-10">
-          <div className="flex items-center">
+      <div className="flex flex-col mt-40">
+        <div className="flex flex-col ">
+          <div className="flex items-center px-20">
             <img
               className="w-60 h-60 mr-10 rounded-2xl"
               src={IconPoints}
@@ -74,15 +90,20 @@ const Task = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col mt-20">
+
+          <div className="flex flex-col mt-20 bg-white rounded-t-xl px-20">
             <div
-              className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-15 rounded-xl"
+              className="border-1  border-b  h-70 flex flex-row justify-between items-center text-16  "
               onClick={() => {
                 onShare();
               }}
             >
               <div className="flex flex-row items-center jusity-center">
-                <div className="w-24 h-24 bg-pGrey rounded-full bg-white"></div>
+                <img
+                  className="w-28 h-28 bg-pGrey rounded-full bg-white"
+                  src={TaskIcon1}
+                  alt=""
+                />
                 <span className=" ml-10 text-black text-14 ">
                   Referral link
                 </span>
@@ -94,13 +115,17 @@ const Task = () => {
                 return (
                   <div
                     key={i}
-                    className="bg-gray-200 px-20 h-52 flex flex-row justify-between items-center text-16 mb-15 rounded-xl"
+                    className="border-1 border-b  h-70 flex flex-row justify-between items-center text-16  "
                     onClick={() => {
                       onTask(item);
                     }}
                   >
                     <div className="flex flex-row items-center jusity-center">
-                      <div className="w-24 h-24 bg-pGrey rounded-full bg-white"></div>
+                      <img
+                        className="w-28 h-28 bg-pGrey rounded-full bg-white"
+                        src={taskIcons[1 + (i % taskIcons.length)]}
+                        alt=""
+                      />
                       <span className=" ml-10 text-black text-14 ">
                         {item.task.name}
                       </span>
@@ -112,7 +137,7 @@ const Task = () => {
                         alt="Search Icon"
                       />
                     ) : (
-                      <div className="text-gray-500">
+                      <div className="text-gray-400">
                         {item.times} / {item.task.threshold} &gt;
                       </div>
                     )}
