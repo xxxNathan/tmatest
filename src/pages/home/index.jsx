@@ -33,10 +33,10 @@ const Home = () => {
       console.log("token");
       const token = localStorage.getItem("token") || false;
       if (token) {
-        // if (categorieList.length > 0) return false;
-        // const categoryRes = await $get("categories");
-        // console.log("v1/categories---------------", categoryRes);
-        // setCategorieList(categoryRes?.data?.list);
+        if (categorieList.length > 0) return false;
+        const categoryRes = await $get("categories");
+        console.log("v1/categories---------------", categoryRes);
+        setCategorieList(categoryRes?.data?.list);
 
         const newRes = await $get("/mini_apps/new");
         setNewList(newRes.data.list);
@@ -79,11 +79,11 @@ const Home = () => {
                   onCategories(item.id);
                 }}
               >
-                <img
+                {/* <img
                   className="mr-5 w-16 h-16 rounded-xl"
                   src={item.logo_url}
                   alt=""
-                />
+                /> */}
                 <span className="text-14">{item.name}</span>
               </div>
             );
@@ -210,7 +210,7 @@ const Home = () => {
               </div>
               {item.apps &&
                 item.apps.length > 0 &&
-                item.apps.map((items, y) => {
+                item.apps.slice(0, 3).map((items, y) => {
                   return (
                     <div className="flex flex-col px-20" key={y}>
                       <div className="flex items-center mb-20">

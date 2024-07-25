@@ -108,7 +108,8 @@ const Task = () => {
                   Referral link
                 </span>
               </div>
-              <img className="w-20 h-20" src={IconSuccess} alt="Search Icon" />
+              {/* <img className="w-20 h-20" src={IconSuccess} alt="Search Icon" /> */}
+              <div className="text-gray-400">&gt;</div>
             </div>
             {taskList &&
               taskList.map((item, i) => {
