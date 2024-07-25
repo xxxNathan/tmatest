@@ -19,7 +19,7 @@ export default defineConfig({
     https: false,
     proxy: {
       "^/v1": {
-        target: "https://orca-summary-oryx.ngrok-free.app/v1/",
+        target: "https://api.miniton.org/v1/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/v1/, ""),
       },

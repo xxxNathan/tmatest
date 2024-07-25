@@ -2,11 +2,9 @@ import axios from "axios";
 
 // 创建一个 Axios 实例
 const api = axios.create({
-  // baseURL: "https://orca-summary-oryx.ngrok-free.app/v1/",
-  baseURL: "/v1",
+  baseURL: "https://api.miniton.org/v1/",
   timeout: 10000,
   headers: {
-    "ngrok-skip-browser-warning": true,
     "Content-Type": "application/json",
   },
 });

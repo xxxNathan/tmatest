@@ -10,7 +10,6 @@ const Home = () => {
   const [newList, setNewList] = useState([]);
   const [hotList, setHotList] = useState([]);
   const [hotCate, setHotCate] = useState([]);
-  const [cateName, setName] = useState("");
 
   const onOpenTMA = async (bot) => {
     console.log("onOpenTMA", bot);
@@ -47,8 +46,8 @@ const Home = () => {
 
         const hostCateRes = await $get("/mini_apps/hot_category");
         console.log("v1/categories---------------", hostCateRes.data.list[0]);
-        setHotCate(hostCateRes.data.list[0].apps);
-        setName(hostCateRes.data.list[0].category.name);
+        setHotCate(hostCateRes.data.list);
+        // setName(hostCateRes.data.list[0].category.name);
         // await onInvitationCode();
         // await getUserPoints();
       }
@@ -200,44 +199,51 @@ const Home = () => {
             })}
         </div>
       </div>
+      {hotCate.length > 0 &&
+        hotCate.map((item, i) => {
+          return (
+            <div className="flex flex-col " key={i}>
+              <div className="flex justify-between flex-row p-20 items-center ">
+                <h1 className="text-20">
+                  {item.category && item.category.name}
+                </h1>
+              </div>
+              {item.apps &&
+                item.apps.length > 0 &&
+                item.apps.map((items, y) => {
+                  return (
+                    <div className="flex flex-col px-20" key={y}>
+                      <div className="flex items-center mb-20">
+                        <img
+                          className="w-50 h-50 mr-10 rounded-xl"
+                          src={items.logo_url}
+                          alt=""
+                        />
 
-      <div className="flex flex-col ">
-        <div className="flex justify-between flex-row p-20 items-center ">
-          <h1 className="text-20">{cateName ? cateName : ""}</h1>
-        </div>
-        <div className="flex flex-col px-20">
-          {hotCate.length > 0 &&
-            hotCate.map((item, i) => {
-              return (
-                <div className="flex items-center mb-20" key={i}>
-                  <img
-                    className="w-50 h-50 mr-10 rounded-xl"
-                    src={item.logo_url}
-                    alt=""
-                  />
+                        <div className="flex-1 overflow-hidden flex flex-col justify-center">
+                          <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
+                            {items.name}
+                          </h3>
 
-                  <div className="flex-1 overflow-hidden flex flex-col justify-center">
-                    <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
-                      {item.name}
-                    </h3>
-
-                    <p className="text-14 text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
-                      {item.description}
-                    </p>
-                  </div>
-                  <button
-                    className="ml-20 px-15 py-6 bg-blue-500 text-white text-14 rounded-2xl"
-                    onClick={() => {
-                      onOpenTMA(item);
-                    }}
-                  >
-                    Open
-                  </button>
-                </div>
-              );
-            })}
-        </div>
-      </div>
+                          <p className="text-14 text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
+                            {items.description}
+                          </p>
+                        </div>
+                        <button
+                          className="ml-20 px-15 py-6 bg-blue-500 text-white text-14 rounded-2xl"
+                          onClick={() => {
+                            onOpenTMA(items);
+                          }}
+                        >
+                          Open
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          );
+        })}
     </div>
   );
 };
