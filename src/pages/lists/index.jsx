@@ -1,35 +1,66 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { $get, $post } from "@/api/axios";
 import { useLocation } from "react-router-dom";
-const Lists = () => {
-  const [list, setList] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
+import InfiniteScroll from "react-infinite-scroll-component";
 
+const Lists = () => {
+  const [list, setList] = useState(null);
+  const [cursor, setCursor] = useState("");
+  const [hasMore, setHasMore] = useState(false);
   const location = useLocation();
-  const { name } = location.state || {};
+  const { name, value } = location.state || {};
+
+  const fetchData = async () => {
+    let resList = [];
+    switch (name) {
+      case "new":
+        resList = await $get("/mini_apps/new");
+        break;
+      case "hot":
+        resList = await $get("/mini_apps/hot");
+        break;
+      case "search":
+        console.log("search", value);
+        resList = await $get(`/mini_apps?keyword=${value}`);
+        setCursor(resList?.data?.cursor);
+        setHasMore(resList?.data?.has_more);
+        break;
+      case "id":
+        resList = await $get(`/mini_apps/category?category_id=${value}&limit=10&form=${cursor}`);
+        setCursor(resList?.data?.cursor);
+        setHasMore(resList?.data?.has_more);
+        break;
+      default:
+        console.log(`Unknown name: ${name}`);
+    }
+    return resList.data.list;
+  };
+
+  const loadMoreData = async () => {
+    console.log("loadMoreData");
+
+    if (name == "id") {
+      let resList = await $get(`/mini_apps/category?category_id=${value}&limit=10&form=${cursor}`);
+      setList((prevList) => [...prevList, ...resList.data.list]);
+    } else if (name == "search") {
+      let resList = await $get(`/mini_apps?keyword=${value}`);
+      setList((prevList) => [...prevList, ...resList.data.list]);
+    }
+
+    // const newData = await fetchData();
+    // if (newData.length === 0) {
+    //   setHasMore(false);
+    // } else {
+    //   setList((prevList) => [...prevList, ...newData]);
+    // }
+  };
 
   useEffect(() => {
     (async () => {
-      // new
-      // hot
-      // category_id
-      // host_category
-      // search
-      console.log("name", name);
-      if (name == "new") {
-        const newRes = await $get("/mini_apps/new");
-        setList(newRes.data.list);
-      } else if (name == "hot") {
-        const hotRes = await $get("/mini_apps/hot");
-        setList(hotRes.data.list);
-      } else {
-        const categoryRes = await $get(`/mini_apps?category_id=${name}`);
-        console.log("categoryRes", categoryRes.data);
-        setList(categoryRes.data.list);
-      }
+      const initialData = await fetchData();
+      setList(initialData);
     })();
-  }, [name]);
+  }, [name, value, cursor]);
 
   const onOpenTMA = async (bot) => {
     console.log("onOpenTMA", bot);
@@ -48,24 +79,25 @@ const Lists = () => {
         console.error("Error initializing user:", error);
       });
   };
+
   return (
     <div className="flex flex-col w-full overflow-x-hidden">
       <div className="flex flex-col p-20">
-        {list &&
-          list.length > 0 &&
-          list.map((item, i) => {
-            return (
+        <InfiniteScroll
+          dataLength={list && list.length}
+          next={loadMoreData}
+          hasMore={hasMore}
+          loader={hasMore && <h4 style={{ textAlign: "center", margin: "40px 0" }}>Loading...</h4>}
+          endMessage={<p style={{ textAlign: "center" }}></p>}
+        >
+          {list &&
+            list.length > 0 &&
+            list.map((item, i) => (
               <div className="flex items-center mb-20" key={i}>
-                <img
-                  className="w-50 h-50 mr-10 rounded-xl"
-                  src={item.logo_url}
-                  alt=""
-                />
+                <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
 
                 <div className="flex-1 overflow-hidden flex flex-col justify-center">
-                  <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
-                    {item.name}
-                  </h3>
+                  <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">{item.name}</h3>
 
                   <p className="text-14 text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
                     {item.description}
@@ -80,8 +112,11 @@ const Lists = () => {
                   打开
                 </button>
               </div>
-            );
-          })}
+            ))}
+          {list && list.length === 0 && (
+            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center ">No Data</div>
+          )}
+        </InfiniteScroll>
       </div>
     </div>
   );

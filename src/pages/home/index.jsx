@@ -2,11 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { $get, $post } from "@/api/axios";
 import { useNavigate } from "react-router-dom";
+import IconSearch from "@/assets/images/icon_search.png";
 
 const Home = () => {
   const navigate = useNavigate();
-  // eslint-disable-next-line no-unused-vars
   const [categorieList, setCategorieList] = useState([]);
+  const [inputValue, setInputValue] = useState("");
   const [newList, setNewList] = useState([]);
   const [hotList, setHotList] = useState([]);
   const [hotCate, setHotCate] = useState([]);
@@ -53,21 +54,33 @@ const Home = () => {
       }
     })();
   }, []);
-  const onCategories = async (name) => {
-    navigate("/lists", { state: { name: name } });
+  const onCategories = async (name, value = "") => {
+    navigate("/lists", { state: { name: name, value: value } });
   };
 
   const goTask = async () => {
     navigate("/task");
   };
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
   return (
     <div className="flex flex-col w-full overflow-x-hidden">
-      {/* <div className="flex p-20 w-full ">
+      <div className="flex p-20 w-full ">
         <div className="bg-gray-200 w-full h-38 rounded-xl flex flex-row items-center px-20">
-          <span>搜索</span>
+          <input value={inputValue} onChange={handleInputChange} type="text" placeholder="Search" className="w-full" />
         </div>
-      </div> */}
-      <div className="flex flex-row overflow-x-scroll pl-5 w-full my-10 mt-20">
+        <div>
+          <img
+            className="w-38 h-38 ml-10"
+            src={IconSearch}
+            onClick={() => {
+              onCategories("search", inputValue);
+            }}
+          />
+        </div>
+      </div>
+      <div className="flex flex-row overflow-x-scroll pl-5 w-full my-10 ">
         {/* categories */}
         {categorieList.length > 0 &&
           categorieList.map((item, i) => {
@@ -76,7 +89,7 @@ const Home = () => {
                 key={i}
                 className="py-4 h-36 flex-shrink-0 whitespace-nowrap  px-20 shadow-inner border-1 border-gray-100 bg-white rounded-xl mr-4 flex flex-row items-center"
                 onClick={() => {
-                  onCategories(item.id);
+                  onCategories("id", item.id);
                 }}
               >
                 {/* <img
@@ -125,11 +138,7 @@ const Home = () => {
             newList.slice(0, 3).map((item, i) => {
               return (
                 <div className="flex items-center mb-20" key={i}>
-                  <img
-                    className="w-50 h-50 mr-10 rounded-xl"
-                    src={item.logo_url}
-                    alt=""
-                  />
+                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
 
                   <div className="flex-1 overflow-hidden flex flex-col justify-center">
                     <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
@@ -171,11 +180,7 @@ const Home = () => {
             hotList.slice(0, 3).map((item, i) => {
               return (
                 <div className="flex items-center mb-20" key={i}>
-                  <img
-                    className="w-50 h-50 mr-10 rounded-xl"
-                    src={item.logo_url}
-                    alt=""
-                  />
+                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
 
                   <div className="flex-1 overflow-hidden flex flex-col justify-center">
                     <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
@@ -204,9 +209,15 @@ const Home = () => {
           return (
             <div className="flex flex-col " key={i}>
               <div className="flex justify-between flex-row p-20 items-center ">
-                <h1 className="text-20">
-                  {item.category && item.category.name}
-                </h1>
+                <h1 className="text-20">{item.category && item.category.name}</h1>
+                <span
+                  className="text-16 text-sky-600"
+                  onClick={() => {
+                    onCategories("id", item.category.id);
+                  }}
+                >
+                  See All
+                </span>
               </div>
               {item.apps &&
                 item.apps.length > 0 &&
@@ -214,11 +225,7 @@ const Home = () => {
                   return (
                     <div className="flex flex-col px-20" key={y}>
                       <div className="flex items-center mb-20">
-                        <img
-                          className="w-50 h-50 mr-10 rounded-xl"
-                          src={items.logo_url}
-                          alt=""
-                        />
+                        <img className="w-50 h-50 mr-10 rounded-xl" src={items.logo_url} alt="" />
 
                         <div className="flex-1 overflow-hidden flex flex-col justify-center">
                           <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">

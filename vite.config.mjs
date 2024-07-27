@@ -18,6 +18,7 @@ export default defineConfig({
   server: {
     https: false,
     proxy: {
+      // https://api.miniton.org/swagger-ui
       "^/v1": {
         target: "https://api.miniton.org/v1/",
         changeOrigin: true,

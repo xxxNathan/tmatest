@@ -38,3 +38,16 @@ img {
   width: 20px;
   height: 20px;
 }
+input {
+  all: unset;
+  display: inline-block;
+}
+
+input.custom {
+  border: none;
+}
+
+input.custom:focus {
+  outline: none;
+  border-color: #ffbd00;
+}
