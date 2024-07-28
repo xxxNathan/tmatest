@@ -3,17 +3,14 @@ import ReactDOM from "react-dom/client";
 import App from "@/App.jsx";
 import "@/index.css";
 import WebApp from "@twa-dev/sdk";
-import VConsole from "vconsole"; // 引入 vConsole
+// import VConsole from "vconsole"; // 引入 vConsole
 import { InviteCodeProvider } from "@/hooks/InviteCodeContext";
 
 WebApp.ready();
 
-new VConsole();
+// new VConsole();
 console.clear();
-console.log(
-  "WebApp.initDataUnsafe.start_param------------",
-  WebApp.initDataUnsafe.start_param
-);
+console.log("WebApp.initDataUnsafe.start_param------------", WebApp.initDataUnsafe.start_param);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

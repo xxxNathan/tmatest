@@ -9,42 +9,47 @@ const Lists = () => {
   const [hasMore, setHasMore] = useState(false);
   const location = useLocation();
   const { name, value } = location.state || {};
-
-  const fetchData = async () => {
-    let resList = [];
-    switch (name) {
-      case "new":
-        resList = await $get("/mini_apps/new");
-        break;
-      case "hot":
-        resList = await $get("/mini_apps/hot");
-        break;
-      case "search":
-        console.log("search", value);
-        resList = await $get(`/mini_apps?keyword=${value}`);
-        setCursor(resList?.data?.cursor);
-        setHasMore(resList?.data?.has_more);
-        break;
-      case "id":
-        resList = await $get(`/mini_apps/category?category_id=${value}&limit=10&form=${cursor}`);
-        setCursor(resList?.data?.cursor);
-        setHasMore(resList?.data?.has_more);
-        break;
-      default:
-        console.log(`Unknown name: ${name}`);
-    }
-    return resList.data.list;
-  };
+  useEffect(() => {
+    (async () => {
+      let resList = [];
+      switch (name) {
+        case "new":
+          resList = await $get("/mini_apps/new");
+          break;
+        case "hot":
+          resList = await $get("/mini_apps/hot");
+          break;
+        case "search":
+          console.log("search", value);
+          resList = await $get(`/mini_apps?keyword=${value}&limit=10&from=${cursor}`);
+          setCursor(resList?.data?.cursor);
+          setHasMore(resList?.data?.has_more);
+          break;
+        case "id":
+          resList = await $get(`/mini_apps/category?category_id=${value}&limit=10&from=${cursor}`);
+          setCursor(resList?.data?.cursor);
+          setHasMore(resList?.data?.has_more);
+          break;
+        default:
+          console.log(`Unknown name: ${name}`);
+      }
+      setList(resList.data.list);
+    })();
+  }, [name]);
 
   const loadMoreData = async () => {
     console.log("loadMoreData");
-
+    if (!hasMore) return false;
     if (name == "id") {
-      let resList = await $get(`/mini_apps/category?category_id=${value}&limit=10&form=${cursor}`);
+      let resList = await $get(`/mini_apps/category?category_id=${value}&limit=10&from=${cursor}`);
       setList((prevList) => [...prevList, ...resList.data.list]);
+      setCursor(resList?.data?.cursor);
+      setHasMore(resList?.data?.has_more);
     } else if (name == "search") {
-      let resList = await $get(`/mini_apps?keyword=${value}`);
+      let resList = await $get(`/mini_apps?keyword=${value}&limit=10&from=${list[list.length - 1].id}`);
+      setCursor(resList?.data?.cursor);
       setList((prevList) => [...prevList, ...resList.data.list]);
+      setHasMore(resList?.data?.has_more);
     }
 
     // const newData = await fetchData();
@@ -55,12 +60,12 @@ const Lists = () => {
     // }
   };
 
-  useEffect(() => {
-    (async () => {
-      const initialData = await fetchData();
-      setList(initialData);
-    })();
-  }, [name, value, cursor]);
+  // useEffect(() => {
+  //   (async () => {
+  //     const initialData = await fetchData();
+  //     setList(initialData);
+  //   })();
+  // }, [name, value, cursor]);
 
   const onOpenTMA = async (bot) => {
     console.log("onOpenTMA", bot);

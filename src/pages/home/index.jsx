@@ -80,7 +80,7 @@ const Home = () => {
           />
         </div>
       </div>
-      <div className="flex flex-row overflow-x-scroll pl-5 w-full my-10 ">
+      <div className="flex flex-row overflow-x-scroll pl-5 w-full my-10 h-36 ">
         {/* categories */}
         {categorieList.length > 0 &&
           categorieList.map((item, i) => {
@@ -133,7 +133,7 @@ const Home = () => {
             See All
           </span>
         </div>
-        <div className="flex flex-col px-20">
+        <div className="flex flex-col px-20 min-h-100">
           {newList.length > 0 &&
             newList.slice(0, 3).map((item, i) => {
               return (
@@ -175,7 +175,7 @@ const Home = () => {
             See All
           </span>
         </div>
-        <div className="flex flex-col px-20">
+        <div className="flex flex-col px-20 min-h-100">
           {hotList.length > 0 &&
             hotList.slice(0, 3).map((item, i) => {
               return (

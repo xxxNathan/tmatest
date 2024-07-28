@@ -17,15 +17,7 @@ const Task = () => {
   const [taskList, setTaskList] = useState([]);
   const [userPoints, setUserPoints] = useState(null);
   const [showInitData, setInitData] = useState(null);
-  const taskIcons = [
-    TaskIcon1,
-    TaskIcon2,
-    TaskIcon3,
-    TaskIcon4,
-    TaskIcon5,
-    TaskIcon6,
-    TaskIcon7,
-  ];
+  const taskIcons = [TaskIcon1, TaskIcon2, TaskIcon3, TaskIcon4, TaskIcon5, TaskIcon6, TaskIcon7];
   useEffect(() => {
     console.log("isTma", isTma, initData);
     if (isTma && initData) {
@@ -37,11 +29,12 @@ const Task = () => {
     (async () => {
       const getInvitation = await $get("users/invitation_info");
       console.log("getInvitation", getInvitation?.data?.code);
-      setUserPoints(getInvitation?.data?.points);
       setInviteCode(getInvitation?.data?.code);
       const getTask = await $get("users/task_details");
       console.log("users/task_details", getTask.data.list);
       await setTaskList(getTask.data.list);
+      const getPoints = await $get("users/points");
+      setUserPoints(getPoints?.data?.points);
     })();
   }, []);
   const parseInitData = (data) => {
@@ -58,9 +51,7 @@ const Task = () => {
   };
   const onShare = async () => {
     const url = `t.me/ACenterMainer_bot/ACenterMainer?startapp=${inviteCode}`;
-    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(
-      url
-    )}&text=${encodeURIComponent(" ")}`;
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(" ")}`;
     window.Telegram.WebApp.openTelegramLink(shareUrl);
   };
   const onTask = async (item) => {
@@ -72,17 +63,11 @@ const Task = () => {
       <div className="flex flex-col mt-40">
         <div className="flex flex-col ">
           <div className="flex items-center px-20">
-            <img
-              className="w-60 h-60 mr-10 rounded-2xl"
-              src={IconPoints}
-              alt=""
-            />
+            <img className="w-60 h-60 mr-10 rounded-2xl" src={IconPoints} alt="" />
 
             <div>
               <h1 className="text-20">
-                {showInitData &&
-                  showInitData?.user?.first_name +
-                    showInitData?.user?.last_name}
+                {showInitData && showInitData?.user?.first_name + showInitData?.user?.last_name}
               </h1>
               <div className="text-14 mt-2">
                 <span>Total Points: </span>
@@ -99,14 +84,8 @@ const Task = () => {
               }}
             >
               <div className="flex flex-row items-center jusity-center">
-                <img
-                  className="w-28 h-28 bg-pGrey rounded-full bg-white"
-                  src={TaskIcon1}
-                  alt=""
-                />
-                <span className=" ml-10 text-black text-14 ">
-                  Referral link
-                </span>
+                <img className="w-28 h-28 bg-pGrey rounded-full bg-white" src={TaskIcon1} alt="" />
+                <span className=" ml-10 text-black text-14 ">Referral link</span>
               </div>
               {/* <img className="w-20 h-20" src={IconSuccess} alt="Search Icon" /> */}
               <div className="text-gray-400">&gt;</div>
@@ -127,16 +106,10 @@ const Task = () => {
                         src={taskIcons[1 + (i % taskIcons.length)]}
                         alt=""
                       />
-                      <span className=" ml-10 text-black text-14 ">
-                        {item.task.name}
-                      </span>
+                      <span className=" ml-10 text-black text-14 ">{item.task.name}</span>
                     </div>
                     {item.completed ? (
-                      <img
-                        className="w-20 h-20"
-                        src={IconSuccess}
-                        alt="Search Icon"
-                      />
+                      <img className="w-20 h-20" src={IconSuccess} alt="Search Icon" />
                     ) : (
                       <div className="text-gray-400">
                         {item.times} / {item.task.threshold} &gt;
