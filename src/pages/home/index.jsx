@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { $get, $post } from "@/api/axios";
 import { useNavigate } from "react-router-dom";
 import IconSearch from "@/assets/images/icon_search.png";
+import IconHot from "@/assets/images/icon_hot.png";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -68,7 +69,13 @@ const Home = () => {
     <div className="flex flex-col w-full overflow-x-hidden">
       <div className="flex p-20 w-full ">
         <div className="bg-gray-200 w-full h-38 rounded-xl flex flex-row items-center px-20">
-          <input value={inputValue} onChange={handleInputChange} type="text" placeholder="Search" className="w-full" />
+          <input
+            value={inputValue}
+            onChange={handleInputChange}
+            type="text"
+            placeholder="Search"
+            className="w-full"
+          />
         </div>
         <div>
           <img
@@ -138,7 +145,16 @@ const Home = () => {
             newList.slice(0, 3).map((item, i) => {
               return (
                 <div className="flex items-center mb-20" key={i}>
-                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
+                  <div className="w-50 h-50 mr-10 rounded-2xl overflow-hidden relative">
+                    <img className="w-full h-full" src={item.logo_url} alt="" />
+                    {item.tag.indexOf("RECOMMENDED") > 0 && (
+                      <img
+                        src={IconHot}
+                        alt=""
+                        className="absolute bottom-0 right-0 w-20 h-15"
+                      />
+                    )}
+                  </div>
 
                   <div className="flex-1 overflow-hidden flex flex-col justify-center">
                     <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
@@ -180,7 +196,16 @@ const Home = () => {
             hotList.slice(0, 3).map((item, i) => {
               return (
                 <div className="flex items-center mb-20" key={i}>
-                  <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
+                  <div className="w-50 h-50 mr-10 rounded-2xl overflow-hidden relative">
+                    <img className="w-full h-full" src={item.logo_url} alt="" />
+                    {item.tag.indexOf("RECOMMENDED") > 0 && (
+                      <img
+                        src={IconHot}
+                        alt=""
+                        className="absolute bottom-0 right-0 w-20 h-15"
+                      />
+                    )}
+                  </div>
 
                   <div className="flex-1 overflow-hidden flex flex-col justify-center">
                     <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
@@ -209,7 +234,9 @@ const Home = () => {
           return (
             <div className="flex flex-col " key={i}>
               <div className="flex justify-between flex-row p-20 items-center ">
-                <h1 className="text-20">{item.category && item.category.name}</h1>
+                <h1 className="text-20">
+                  {item.category && item.category.name}
+                </h1>
                 <span
                   className="text-16 text-sky-600"
                   onClick={() => {
@@ -225,7 +252,20 @@ const Home = () => {
                   return (
                     <div className="flex flex-col px-20" key={y}>
                       <div className="flex items-center mb-20">
-                        <img className="w-50 h-50 mr-10 rounded-xl" src={items.logo_url} alt="" />
+                        <div className="w-50 h-50 mr-10 rounded-2xl overflow-hidden relative">
+                          <img
+                            className="w-full h-full"
+                            src={items.logo_url}
+                            alt=""
+                          />
+                          {items.tag.indexOf("RECOMMENDED") > 0 && (
+                            <img
+                              src={IconHot}
+                              alt=""
+                              className="absolute bottom-0 right-0 w-20 h-15"
+                            />
+                          )}
+                        </div>
 
                         <div className="flex-1 overflow-hidden flex flex-col justify-center">
                           <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">

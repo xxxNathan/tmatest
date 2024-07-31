@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { $get, $post } from "@/api/axios";
 import { useLocation } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
+import IconHot from "@/assets/images/icon_hot.png";
 
 const Lists = () => {
   const [list, setList] = useState(null);
@@ -21,12 +22,16 @@ const Lists = () => {
           break;
         case "search":
           console.log("search", value);
-          resList = await $get(`/mini_apps?keyword=${value}&limit=10&from=${cursor}`);
+          resList = await $get(
+            `/mini_apps?keyword=${value}&limit=10&from=${cursor}`
+          );
           setCursor(resList?.data?.cursor);
           setHasMore(resList?.data?.has_more);
           break;
         case "id":
-          resList = await $get(`/mini_apps/category?category_id=${value}&limit=10&from=${cursor}`);
+          resList = await $get(
+            `/mini_apps/category?category_id=${value}&limit=10&from=${cursor}`
+          );
           setCursor(resList?.data?.cursor);
           setHasMore(resList?.data?.has_more);
           break;
@@ -41,12 +46,16 @@ const Lists = () => {
     console.log("loadMoreData");
     if (!hasMore) return false;
     if (name == "id") {
-      let resList = await $get(`/mini_apps/category?category_id=${value}&limit=10&from=${cursor}`);
+      let resList = await $get(
+        `/mini_apps/category?category_id=${value}&limit=10&from=${cursor}`
+      );
       setList((prevList) => [...prevList, ...resList.data.list]);
       setCursor(resList?.data?.cursor);
       setHasMore(resList?.data?.has_more);
     } else if (name == "search") {
-      let resList = await $get(`/mini_apps?keyword=${value}&limit=10&from=${list[list.length - 1].id}`);
+      let resList = await $get(
+        `/mini_apps?keyword=${value}&limit=10&from=${list[list.length - 1].id}`
+      );
       setCursor(resList?.data?.cursor);
       setList((prevList) => [...prevList, ...resList.data.list]);
       setHasMore(resList?.data?.has_more);
@@ -92,17 +101,34 @@ const Lists = () => {
           dataLength={list && list.length}
           next={loadMoreData}
           hasMore={hasMore}
-          loader={hasMore && <h4 style={{ textAlign: "center", margin: "40px 0" }}>Loading...</h4>}
+          loader={
+            hasMore && (
+              <h4 style={{ textAlign: "center", margin: "40px 0" }}>
+                Loading...
+              </h4>
+            )
+          }
           endMessage={<p style={{ textAlign: "center" }}></p>}
         >
           {list &&
             list.length > 0 &&
             list.map((item, i) => (
               <div className="flex items-center mb-20" key={i}>
-                <img className="w-50 h-50 mr-10 rounded-xl" src={item.logo_url} alt="" />
+                <div className="w-50 h-50 mr-10 rounded-2xl overflow-hidden relative">
+                  <img className="w-full h-full" src={item.logo_url} alt="" />
+                  {item.tag.indexOf("RECOMMENDED") > 0 && (
+                    <img
+                      src={IconHot}
+                      alt=""
+                      className="absolute bottom-0 right-0 w-20 h-15"
+                    />
+                  )}
+                </div>
 
                 <div className="flex-1 overflow-hidden flex flex-col justify-center">
-                  <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">{item.name}</h3>
+                  <h3 className="text-16 font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    {item.name}
+                  </h3>
 
                   <p className="text-14 text-gray-600 mt-1 whitespace-nowrap text-ellipsis overflow-hidden">
                     {item.description}
@@ -119,7 +145,9 @@ const Lists = () => {
               </div>
             ))}
           {list && list.length === 0 && (
-            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center ">No Data</div>
+            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center ">
+              No Data
+            </div>
           )}
         </InfiniteScroll>
       </div>
